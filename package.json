@@ -19,6 +19,7 @@
     "vite": "^7.1.0"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.57.0"
+    "@supabase/supabase-js": "^2.57.0",
+    "universal-parcel-scraper": "^0.495.1"
   }
 }
