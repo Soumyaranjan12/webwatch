@@ -18,6 +18,9 @@
   let parcelSaveBusy = false;
   let parcelSaveMessage = '';
   let parcelSaveError = '';
+  let savedParcels: { id: string; tracking_number: string; carrier: string; current_status: string | null; expected_delivery: string | null; updated_at: string }[] = [];
+  let savedParcelsBusy = false;
+  let savedParcelsError = '';
   let parcelResult: {
     carrier: string;
     source: string;
@@ -88,11 +91,34 @@
   const supabase = getSupabase();
   $: configured = Boolean(supabase);
 
+  async function loadSavedParcels(userId: string) {
+    if (!supabase) return;
+    savedParcelsBusy = true;
+    savedParcelsError = '';
+    const { data, error: loadError } = await supabase
+      .from('tracked_parcels')
+      .select('id, tracking_number, carrier, current_status, expected_delivery, updated_at')
+      .eq('user_id', userId)
+      .order('updated_at', { ascending: false })
+      .limit(50);
+    if (loadError) {
+      savedParcelsError = 'Could not load saved parcels. Apply the tracked-parcels database migration in Supabase first.';
+    } else {
+      savedParcels = data ?? [];
+    }
+    savedParcelsBusy = false;
+  }
+
   onMount(() => {
     if (!supabase) return;
-    supabase.auth.getUser().then(({ data }) => user = data.user);
+    supabase.auth.getUser().then(({ data }) => {
+      user = data.user;
+      if (data.user) void loadSavedParcels(data.user.id);
+    });
     const { data } = supabase.auth.onAuthStateChange((_event, session) => {
       user = session?.user ?? null;
+      if (session?.user) void loadSavedParcels(session.user.id);
+      else savedParcels = [];
     });
     return () => data.subscription.unsubscribe();
   });
@@ -269,6 +295,31 @@
       {/if}
       <p class="privacy-note">Lookup requests are sent to the tracking provider. Do not enter passwords or other sensitive information.</p>
     </section>
+
+    {#if user}
+      <section class="saved-parcels" aria-labelledby="saved-parcels-heading">
+        <div class="section-eyebrow"><span class="eyebrow-line"></span> YOUR PRIVATE WATCHLIST</div>
+        <div class="saved-parcels-heading">
+          <div><h2 id="saved-parcels-heading">Saved parcels.</h2><p>Shipments linked to your account on this device and across sessions.</p></div>
+          <span class="saved-count">{savedParcels.length} saved</span>
+        </div>
+        {#if savedParcelsBusy}<p class="saved-empty">Loading your parcels…</p>
+        {:else if savedParcelsError}<p class="notice error" role="alert">{savedParcelsError}</p>
+        {:else if savedParcels.length}
+          <ul class="saved-parcel-list">
+            {#each savedParcels as parcel (parcel.id)}
+              <li>
+                <div class="saved-parcel-icon">↗</div>
+                <div class="saved-parcel-main"><strong>{parcel.tracking_number}</strong><span>{parcel.carrier}</span></div>
+                <div class="saved-parcel-status"><strong>{parcel.current_status ?? 'Status not available'}</strong>{#if parcel.expected_delivery}<span>Expected: {parcel.expected_delivery}</span>{/if}</div>
+              </li>
+            {/each}
+          </ul>
+        {:else}
+          <p class="saved-empty">No saved parcels yet. Track a parcel above and choose “Save this parcel”.</p>
+        {/if}
+      </section>
+    {/if}
 
     <section class="guest-strip" id="guest">
       <div class="guest-symbol">↗</div>
