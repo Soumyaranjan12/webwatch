@@ -11,7 +11,7 @@ This branch starts the production-oriented SvelteKit + TypeScript application wh
 
 ## Local development
 
-Requirements: Node.js 20.19+ or 22.12+ recommended.
+Requirements: Node.js 24+ (required by the parcel tracking engine).
 
 ```bash
 npm install
@@ -38,4 +38,6 @@ Authentication remains in preview mode until valid Supabase credentials and prov
 4. Implement provider adapters for supported retailer and courier sources, with rate limiting, URL/SSRF protections, and background jobs.
 5. Add end-to-end tests, deployment configuration, monitoring, backups, and operational documentation.
 
-Live retailer/courier integrations, saved watchlists, alerts, and account data are not implemented by this initial foundation.
+## Parcel lookup vertical slice
+
+The branch now includes a server-side guest parcel lookup endpoint at `POST /api/parcels/track`, powered by `universal-parcel-scraper`. It returns normalized courier/status/event data from the tracking engine and does not fabricate events. Carrier coverage is not guaranteed; the upstream project scrapes carrier sites, which may rate-limit or block automated requests. No parcel data is persisted yet, and scheduled polling/notifications are not implemented. The endpoint includes a basic in-memory per-IP rate limit; production deployment needs shared rate limiting and operational monitoring.
