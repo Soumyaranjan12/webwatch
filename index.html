@@ -235,6 +235,35 @@ body.light .parcel-select-card.selected:hover{background:rgba(37,99,235,.11)!imp
 .stats-grid .stat-card:focus-visible{outline:2px solid #ef5264;outline-offset:3px}
 body.light .stats-grid .stat-card:hover{border-color:rgba(37,99,235,.25)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 0 0 1px rgba(37,99,235,.035)!important}
 
+
+/* Unified frosted-glass surfaces with a restrained light sweep on hover/focus. */
+:root{--glass-base:rgba(255,255,255,.035);--glass-border:rgba(255,255,255,.12);--glass-shine:rgba(255,255,255,.13);--glass-sweep:rgba(255,255,255,.075)}
+.stat-card,.panel,.watch-card,.shipment-card,.parcel-select-card,.vital-panel,.metric-strip,.settings-panel,.plan-detail,.quick-add,.add-watch-card,.btn-primary,.btn-secondary,.upgrade,.text-link,.round-link,.nav button,.modal button,.tabs button,.filter-chip,.chip-button,.theme-toggle,.bottom-note button{
+  position:relative;isolation:isolate;overflow:hidden;
+  background-color:var(--glass-base);
+  border:1px solid var(--glass-border);
+  backdrop-filter:blur(16px) saturate(130%);-webkit-backdrop-filter:blur(16px) saturate(130%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.045);
+  transition:background-color .24s ease,border-color .24s ease,box-shadow .24s ease,color .24s ease!important;
+  animation:none!important;transform:none!important;
+}
+.stat-card::after,.panel::after,.watch-card::after,.shipment-card::after,.parcel-select-card::after,.vital-panel::after,.metric-strip::after,.settings-panel::after,.plan-detail::after,.quick-add::after,.add-watch-card::after,.btn-primary::after,.btn-secondary::after,.upgrade::after,.text-link::after,.round-link::after,.nav button::after,.modal button::after,.tabs button::after,.filter-chip::after,.chip-button::after,.theme-toggle::after,.bottom-note button::after{
+  content:"";position:absolute;inset:-1px;z-index:-1;pointer-events:none;
+  background:linear-gradient(112deg,transparent 0%,transparent 34%,var(--glass-shine) 47%,rgba(255,255,255,.025) 53%,transparent 66%,transparent 100%);
+  transform:translateX(-125%);transition:transform .65s cubic-bezier(.2,.7,.2,1);
+}
+.stat-card:hover::after,.panel:hover::after,.watch-card:hover::after,.shipment-card:hover::after,.parcel-select-card:hover::after,.vital-panel:hover::after,.metric-strip:hover::after,.settings-panel:hover::after,.plan-detail:hover::after,.quick-add:hover::after,.add-watch-card:hover::after,.btn-primary:hover::after,.btn-secondary:hover::after,.upgrade:hover::after,.text-link:hover::after,.round-link:hover::after,.nav button:hover::after,.modal button:hover::after,.tabs button:hover::after,.filter-chip:hover::after,.chip-button:hover::after,.theme-toggle:hover::after,.bottom-note button:hover::after,
+.stat-card:focus-visible::after,.panel:focus-within::after,.watch-card:focus-within::after,.shipment-card:focus-within::after,.parcel-select-card:focus-visible::after,.btn-primary:focus-visible::after,.btn-secondary:focus-visible::after,.nav button:focus-visible::after,.theme-toggle:focus-visible::after{transform:translateX(125%)}
+.stat-card:hover,.panel:hover,.watch-card:hover,.shipment-card:hover,.parcel-select-card:hover,.vital-panel:hover,.settings-panel:hover,.plan-detail:hover,.quick-add:hover,.add-watch-card:hover,.btn-primary:hover,.btn-secondary:hover,.upgrade:hover,.text-link:hover,.round-link:hover,.nav button:hover,.modal button:hover,.tabs button:hover,.filter-chip:hover,.chip-button:hover,.theme-toggle:hover,.bottom-note button:hover{
+  background-color:var(--glass-sweep)!important;border-color:rgba(255,255,255,.24)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.14)!important;transform:none!important
+}
+.stat-card:hover .stat-icon{transform:none!important}
+body.light{--glass-base:rgba(255,255,255,.48);--glass-border:rgba(100,116,139,.20);--glass-shine:rgba(255,255,255,.88);--glass-sweep:rgba(255,255,255,.82)}
+body.light .stat-card,body.light .panel,body.light .watch-card,body.light .shipment-card,body.light .parcel-select-card,body.light .vital-panel,body.light .metric-strip,body.light .settings-panel,body.light .plan-detail,body.light .quick-add,body.light .add-watch-card,body.light .btn-primary,body.light .btn-secondary,body.light .upgrade,body.light .text-link,body.light .round-link,body.light .nav button,body.light .modal button,body.light .tabs button,body.light .filter-chip,body.light .chip-button,body.light .theme-toggle,body.light .bottom-note button{background-color:var(--glass-base);border-color:var(--glass-border);box-shadow:inset 0 1px 0 rgba(255,255,255,.65)}
+body.light .stat-card:hover,body.light .panel:hover,body.light .watch-card:hover,body.light .shipment-card:hover,body.light .parcel-select-card:hover,body.light .vital-panel:hover,body.light .settings-panel:hover,body.light .plan-detail:hover,body.light .quick-add:hover,body.light .add-watch-card:hover,body.light .btn-primary:hover,body.light .btn-secondary:hover,body.light .upgrade:hover,body.light .text-link:hover,body.light .round-link:hover,body.light .nav button:hover,body.light .modal button:hover,body.light .tabs button:hover,body.light .filter-chip:hover,body.light .chip-button:hover,body.light .theme-toggle:hover,body.light .bottom-note button:hover{background-color:var(--glass-sweep)!important;border-color:rgba(37,99,235,.25)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.92)!important}
+.stat-card::after,.panel::after,.watch-card::after,.shipment-card::after,.parcel-select-card::after,.vital-panel::after,.metric-strip::after,.settings-panel::after,.plan-detail::after,.quick-add::after,.add-watch-card::after{border-radius:inherit}
+@media(prefers-reduced-motion:reduce){.stat-card::after,.panel::after,.watch-card::after,.shipment-card::after,.parcel-select-card::after,.vital-panel::after,.metric-strip::after,.settings-panel::after,.plan-detail::after,.quick-add::after,.add-watch-card::after,.btn-primary::after,.btn-secondary::after,.upgrade::after,.text-link::after,.round-link::after,.nav button::after,.modal button::after,.tabs button::after,.filter-chip::after,.chip-button::after,.theme-toggle::after,.bottom-note button::after{transition:none!important}.stat-card:hover::after,.panel:hover::after,.watch-card:hover::after,.shipment-card:hover::after,.parcel-select-card:hover::after,.vital-panel:hover::after,.settings-panel:hover::after,.plan-detail:hover::after,.quick-add:hover::after,.add-watch-card:hover::after,.btn-primary:hover::after,.btn-secondary:hover::after,.upgrade:hover::after,.text-link:hover::after,.round-link:hover::after,.nav button:hover::after,.modal button:hover::after,.tabs button:hover::after,.filter-chip:hover::after,.chip-button:hover::after,.theme-toggle:hover::after,.bottom-note button:hover::after{transform:none}}
+
 </style>
 </head>
 <body><div class="shell">
