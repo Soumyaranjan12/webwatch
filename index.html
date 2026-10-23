@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#09090b"><meta name="description" content="WebWatch keeps an eye on prices, stock, and deliveries. One dashboard for everything you track.">
+<meta name="theme-color" content="#09090b">
+<link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icon.svg" type="image/svg+xml"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="WebWatch"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="description" content="WebWatch keeps an eye on prices, stock, and deliveries. One dashboard for everything you track.">
 <title>WebWatch — Keep an eye on everything</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -278,6 +279,8 @@ body.light .home-item-clickable:hover{background-color:rgba(37,99,235,.045);bord
 /* The first overview tile's progress bar was still inheriting the animated progress-glint. */
 .stats-grid .stat-card:first-child .stat-line span:after{content:none!important;display:none!important;animation:none!important;transform:none!important;background:none!important}
 
+
+.install-app[hidden]{display:none!important}.install-app,.sign-in-top{font-size:10px!important;padding:8px 11px!important;border-radius:9px!important;white-space:nowrap}.auth-note{font-size:10px;color:var(--muted);line-height:1.6;margin-top:12px}.auth-options{display:grid;gap:9px;margin-top:16px}.auth-options button{width:100%}.guest-banner{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:12px 15px;margin:0 0 17px;border:1px solid #4a252c;border-radius:12px;background:linear-gradient(100deg,#261216,#141114);font-size:10px;color:#c9c1c6}.guest-banner strong{color:#fff}.guest-banner button{border:1px solid #6d2b37;background:#391820;border-radius:8px;padding:8px 10px;font-size:10px;white-space:nowrap}body.light .guest-banner{background:#f8eef0;border-color:#e8cbd0;color:#64545a}body.light .guest-banner strong{color:#33252a}body.light .guest-banner button{background:#fff;border-color:#d8aeb7;color:#772638}.install-hint{font-size:10px;line-height:1.6;color:var(--muted);margin-top:14px}.auth-input{width:100%;margin-top:8px;padding:12px;border-radius:9px;background:var(--surface);border:1px solid var(--line);color:inherit;font-size:12px}
 </style>
 </head>
 <body><div class="shell">
@@ -293,8 +296,8 @@ body.light .home-item-clickable:hover{background-color:rgba(37,99,235,.045);bord
 <div class="plan-card"><div class="plan-top"><span style="color:#fb7180">ϟ</span><span id="sidePlan">Free plan</span><span class="plan-dot"></span></div><div class="plan-title" id="sidePlanTitle">Stay in the loop.</div><p id="sidePlanText">10 active price watches · daily checks</p><button class="upgrade" id="sidePlanBtn">Explore Plus <span>→</span></button></div>
 <div class="profile"><div class="avatar">W</div><div class="profile-copy"><strong>Demo workspace</strong><span>Local preview</span></div><button class="icon-button" data-tab="Settings" title="Settings">⚙</button></div>
 </aside>
-<main class="main"><header class="topbar"><div class="breadcrumb"><span>Workspace</span><span style="color:#42424a">/</span><b id="crumb">Overview</b></div><div class="top-actions"><button class="icon-button theme-toggle" id="themeToggle" type="button" title="Switch to light theme" aria-label="Switch to light theme">☼</button><div class="demo-pill"><i></i> DEMO MODE</div><button class="icon-button bell" id="bell" title="Notifications">♧</button><div class="top-avatar">W</div></div></header>
-<section class="page" id="page"></section>
+<main class="main"><header class="topbar"><div class="breadcrumb"><span>Workspace</span><span style="color:#42424a">/</span><b id="crumb">Overview</b></div><div class="top-actions"><button class="icon-button theme-toggle" id="themeToggle" type="button" title="Switch to light theme" aria-label="Switch to light theme">☼</button><button class="btn-secondary install-app" id="installApp" type="button" hidden>＋ Install</button><button class="btn-secondary sign-in-top" id="signInTop" type="button" onclick="openAuth()">Sign in</button><div class="demo-pill"><i></i> DEMO MODE</div><button class="icon-button bell" id="bell" title="Notifications">♧</button><div class="top-avatar">W</div></div></header>
+<section class="page" id="page"><div class="guest-banner"><div><strong>Guest mode</strong> · Check once, then sign in to save watches and tracking history.</div><button type="button" onclick="openAuth()">Save across devices ↗</button></div></section>
 <footer class="footer"><span>© 2026 WebWatch</span><span>Built to keep you in the know.</span><a href="#" id="privacy">Privacy & terms</a></footer></main>
 </div>
 <div id="modalRoot"></div><div id="toastRoot"></div>
@@ -412,4 +415,30 @@ document.getElementById('themeToggle').onclick=()=>setTheme(document.body.classL
 setTheme(document.body.classList.contains('light')?'light':'dark');
 
 document.getElementById('bell').onclick=()=>toast('You are all caught up.');document.getElementById('privacy').onclick=e=>{e.preventDefault();toast('Privacy and terms will be published before launch.')};updatePlan();render();
+
+// Guest-first lookup and account prompt (prototype UI; no auth or live retailer/carrier API is connected).
+let webwatchGuestLookup=null;
+function closeWebwatchModal(){const r=document.getElementById('modalRoot');if(r)r.innerHTML=''}
+function openModal(type){
+ const root=document.getElementById('modalRoot');
+ const isPrice=type==='price';
+ root.innerHTML='<div class="modal-backdrop" id="backdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="guestTitle"><div class="modal-top"><div class="modal-symbol">'+(isPrice?'↗':'▣')+'</div><button class="icon-button" id="closeModal" type="button" aria-label="Close">×</button></div><div class="eyebrow">GUEST LOOKUP</div><h2 id="guestTitle">'+(isPrice?'Check a product price.':'Check a delivery status.')+'</h2><p>Try a one-time lookup without an account. Sign in later to save it to your watchtower and sync it across devices.</p><form id="addForm"><label>'+(isPrice?'PRODUCT PAGE URL':'TRACKING NUMBER OR TRACKING URL')+'</label><div class="url-input">↗ <input id="urlInput" required autocomplete="off" placeholder="'+(isPrice?'https://store.in/product...':'Enter tracking number or carrier URL')+'"></div><button class="btn-primary full submit-btn" type="submit">'+(isPrice?'Check price':'Check delivery status')+' →</button><div class="modal-foot">Privacy-first preview · Input is not sent to a service.</div></form><div class="install-hint">Want this on your phone? Use <b>Install</b> in your browser, or on iPhone choose Share → Add to Home Screen.</div></section></div>';
+ document.getElementById('closeModal').onclick=closeWebwatchModal;
+ document.getElementById('backdrop').onclick=e=>{if(e.target.id==='backdrop')closeWebwatchModal()};
+ document.getElementById('addForm').onsubmit=e=>{e.preventDefault();const val=document.getElementById('urlInput').value.trim();if(!val)return;webwatchGuestLookup={type,isPrice,value:val};root.innerHTML='<div class="modal-backdrop" id="resultBackdrop"><section class="modal" role="dialog" aria-modal="true"><div class="modal-top"><div class="modal-symbol">⌕</div><button class="icon-button" id="closeResult" type="button" aria-label="Close">×</button></div><div class="eyebrow">ONE-TIME CHECK</div><h2>'+(isPrice?'Product lookup ready.':'Delivery lookup ready.')+'</h2><p>Your input has been captured in this page only. Live retailer and courier integrations are not connected in this demo, so WebWatch cannot return a real price or shipment scan yet.</p><div class="modal-foot">Guest session · Not saved · No live data retrieved</div><button class="btn-primary full submit-btn" id="saveAfterLookup" type="button">Sign in to save permanently →</button><button class="btn-secondary full" id="continueGuest" type="button" style="margin-top:9px">Continue as guest</button></section></div>';
+ document.getElementById('closeResult').onclick=closeWebwatchModal;document.getElementById('resultBackdrop').onclick=e=>{if(e.target.id==='resultBackdrop')closeWebwatchModal()};document.getElementById('saveAfterLookup').onclick=()=>openAuth();document.getElementById('continueGuest').onclick=()=>{closeWebwatchModal();toast('Guest session only. Live lookup is not connected yet.')};
+ };
+}
+function openAuth(){
+ const root=document.getElementById('modalRoot');
+ root.innerHTML='<div class="modal-backdrop" id="authBackdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="authTitle"><div class="modal-top"><div class="modal-symbol">⌁</div><button class="icon-button" id="closeAuth" type="button" aria-label="Close">×</button></div><div class="eyebrow">YOUR WATCHTOWER, EVERYWHERE</div><h2 id="authTitle">Save it for later.</h2><p>Create an account or sign in to keep price watches, target prices, parcel history and preferences across devices.</p><form id="authForm"><label>EMAIL ADDRESS</label><input class="auth-input" id="authEmail" type="email" autocomplete="email" required placeholder="you@example.com"><button class="btn-primary full submit-btn" type="submit">Continue with email →</button></form><div class="auth-note">Account creation and sign-in are a visual prototype only. No credentials are sent or stored; authentication needs a secure backend.</div><button class="btn-secondary full" id="guestAuthClose" type="button" style="margin-top:13px">Keep browsing as guest</button></section></div>';
+ document.getElementById('closeAuth').onclick=closeWebwatchModal;document.getElementById('guestAuthClose').onclick=closeWebwatchModal;document.getElementById('authBackdrop').onclick=e=>{if(e.target.id==='authBackdrop')closeWebwatchModal()};document.getElementById('authForm').onsubmit=e=>{e.preventDefault();toast('Sign-in backend is not connected yet. No email was sent.');};
+}
+let installPromptEvent=null;
+const installButton=document.getElementById('installApp');
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPromptEvent=e;if(installButton)installButton.hidden=false});
+if(installButton){installButton.addEventListener('click',async()=>{if(installPromptEvent){installPromptEvent.prompt();await installPromptEvent.userChoice;installPromptEvent=null;installButton.hidden=true}else{toast('On iPhone: tap Share, then Add to Home Screen. On desktop, use your browser menu to install WebWatch.')}})}
+window.addEventListener('appinstalled',()=>{if(installButton)installButton.hidden=true;toast('WebWatch added to your device.')});
+if('serviceWorker' in navigator && location.protocol!=='file:'){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
+
 </script></body></html>
