@@ -196,6 +196,37 @@ body.light .vital-panel,body.light .vital-summary>div{background:#fff}body.light
 @media(max-width:460px){.price-product-ident{gap:10px}.vital-thumb{width:43px;height:43px}.price-product-ident h1{font-size:18px}.vital-status{max-width:105px;white-space:normal;line-height:1.4}.vital-panel-head{flex-direction:column}.history-tabs{align-self:flex-start}.vital-window-label{margin-left:0}.price-reading-row{grid-template-columns:6px 1fr auto;gap:8px}.reading-change{display:none}.vital-range-cards{grid-template-columns:1fr}.vital-range-cards>div+div{border-left:0;border-top:1px solid var(--line)}.vital-range-cards>div{display:flex;justify-content:space-between;align-items:center}}
 @media(prefers-reduced-motion:reduce){.vital-pulse,.vital-current-ring{animation:none!important}.vital-pulse{stroke-dashoffset:0}}
 
+
+/* Glass tile treatment: remove lift/entrance effects; glass responds only to hover. */
+:root{--glass-fill:rgba(255,255,255,.035);--glass-line:rgba(255,255,255,.11);--glass-hover:rgba(255,255,255,.075)}
+.stat-card,.panel,.watch-card,.shipment-card,.parcel-select-card,.vital-panel,.metric-strip,.settings-panel,.plan-detail,.quick-add,.add-watch-card{
+  background:var(--glass-fill)!important;
+  border:1px solid var(--glass-line)!important;
+  box-shadow:none!important;
+  backdrop-filter:blur(16px) saturate(125%);
+  -webkit-backdrop-filter:blur(16px) saturate(125%);
+  animation:none!important;
+  transform:none!important;
+  transition:background-color .22s ease,border-color .22s ease,box-shadow .22s ease!important;
+}
+.stat-card:hover,.panel:hover,.watch-card:hover,.shipment-card:hover,.parcel-select-card:hover,.vital-panel:hover,.settings-panel:hover,.plan-detail:hover,.quick-add:hover,.add-watch-card:hover{
+  background:var(--glass-hover)!important;
+  border-color:rgba(255,255,255,.24)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 0 0 1px rgba(255,255,255,.025)!important;
+  transform:none!important;
+}
+.parcel-select-card.selected{background:rgba(227,72,88,.09)!important;border-color:rgba(227,72,88,.38)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)!important}
+.parcel-select-card.selected:hover{background:rgba(227,72,88,.14)!important}
+body.light{--glass-fill:rgba(255,255,255,.48);--glass-line:rgba(100,116,139,.18);--glass-hover:rgba(255,255,255,.78)}
+body.light .stat-card,body.light .panel,body.light .watch-card,body.light .shipment-card,body.light .parcel-select-card,body.light .vital-panel,body.light .metric-strip,body.light .settings-panel,body.light .plan-detail,body.light .quick-add,body.light .add-watch-card{
+  background:var(--glass-fill)!important;border-color:var(--glass-line)!important;box-shadow:none!important;
+}
+body.light .stat-card:hover,body.light .panel:hover,body.light .watch-card:hover,body.light .shipment-card:hover,body.light .parcel-select-card:hover,body.light .vital-panel:hover,body.light .settings-panel:hover,body.light .plan-detail:hover,body.light .quick-add:hover,body.light .add-watch-card:hover{
+  background:var(--glass-hover)!important;border-color:rgba(37,99,235,.25)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 0 0 1px rgba(37,99,235,.035)!important;transform:none!important;
+}
+body.light .parcel-select-card.selected{background:rgba(37,99,235,.06)!important;border-color:rgba(37,99,235,.28)!important}
+body.light .parcel-select-card.selected:hover{background:rgba(37,99,235,.11)!important}
+
 </style>
 </head>
 <body><div class="shell">
