@@ -11,6 +11,49 @@
   let message = '';
   let error = '';
 
+  let parcelNumber = '';
+  let parcelCarrier = '';
+  let parcelBusy = false;
+  let parcelError = '';
+  let parcelResult: {
+    carrier: string;
+    source: string;
+    status: string | null;
+    expectedDelivery: string | null;
+    serviceName: string | null;
+    events: { time: string | null; location: string | null; description: string | null; stage: string | null }[];
+  } | null = null;
+
+  async function trackParcel() {
+    parcelError = '';
+    parcelResult = null;
+    if (parcelNumber.trim().length < 5) {
+      parcelError = 'Enter a tracking number with at least 5 characters.';
+      return;
+    }
+    parcelBusy = true;
+    try {
+      const response = await fetch('/api/parcels/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ number: parcelNumber.trim(), ...(parcelCarrier ? { carrier: parcelCarrier } : {}) })
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error ?? 'Tracking lookup failed.');
+      parcelResult = data;
+    } catch (e) {
+      parcelError = e instanceof Error ? e.message : 'Tracking lookup failed. Please try again.';
+    } finally {
+      parcelBusy = false;
+    }
+  }
+
+  function formatEventTime(value: string | null): string {
+    if (!value) return 'Time not provided by courier';
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+  }
+
   const supabase = getSupabase();
   $: configured = Boolean(supabase);
 
@@ -129,6 +172,62 @@
         {/if}
         {#if !configured}<p class="config-note"><span>!</span> Preview mode — connect Supabase to enable authentication.</p>{/if}
       </section>
+    </section>
+
+    <section class="parcel-section" id="parcel-tracking" aria-labelledby="parcel-heading">
+      <div class="section-eyebrow"><span class="eyebrow-line"></span> LIVE LOOKUP · FIRST TRACKING FEATURE</div>
+      <div class="parcel-heading-row">
+        <div>
+          <h2 id="parcel-heading">Track a parcel.</h2>
+          <p class="parcel-intro">Enter a real tracking number. WebWatch will query the tracking engine and show returned courier events when available.</p>
+        </div>
+        <span class="lookup-badge">GUEST LOOKUP</span>
+      </div>
+
+      <form class="parcel-form" onsubmit={(event) => { event.preventDefault(); trackParcel(); }}>
+        <div class="parcel-field">
+          <label for="parcel-number">Tracking number</label>
+          <input id="parcel-number" bind:value={parcelNumber} placeholder="Enter your tracking number" autocomplete="off" minlength="5" maxlength="100" required />
+        </div>
+        <div class="parcel-field courier-field">
+          <label for="parcel-carrier">Courier (optional)</label>
+          <input id="parcel-carrier" bind:value={parcelCarrier} placeholder="Auto-detect courier" autocomplete="off" maxlength="60" />
+          <small>Leave blank to let the engine detect it. An explicit carrier must use its supported carrier ID.</small>
+        </div>
+        <button class="primary-button parcel-submit" type="submit" disabled={parcelBusy}>{parcelBusy ? 'Checking courier…' : 'Track parcel'} <span>↗</span></button>
+      </form>
+
+      {#if parcelError}
+        <p class="notice error parcel-notice" role="alert">{parcelError}</p>
+      {/if}
+      {#if parcelResult}
+        <div class="parcel-result" aria-live="polite">
+          <div class="result-summary">
+            <div><span class="result-label">COURIER</span><strong>{parcelResult.carrier}</strong></div>
+            <div><span class="result-label">CURRENT STATUS</span><strong>{parcelResult.status ?? 'Status not provided'}</strong></div>
+            {#if parcelResult.expectedDelivery}
+              <div><span class="result-label">EXPECTED DELIVERY</span><strong>{parcelResult.expectedDelivery}</strong></div>
+            {/if}
+          </div>
+          {#if parcelResult.serviceName}<p class="service-name">{parcelResult.serviceName}</p>{/if}
+          {#if parcelResult.events.length}
+            <h3>Shipment events <span>{parcelResult.events.length}</span></h3>
+            <ol class="event-timeline">
+              {#each parcelResult.events as event, index}
+                <li class:latest={index === 0}>
+                  <span class="timeline-node"></span>
+                  <div><strong>{event.description ?? event.stage ?? 'Shipment update'}</strong><p>{event.location || 'Location not provided'}</p><small>{formatEventTime(event.time)}</small></div>
+                  {#if event.stage}<span class="event-stage">{event.stage}</span>{/if}
+                </li>
+              {/each}
+            </ol>
+          {:else}
+            <p class="no-events">The courier response did not include scan events. This is not a fabricated timeline; try again later or verify the tracking number.</p>
+          {/if}
+          <p class="source-note">Source: {parcelResult.source}. Availability depends on the courier's website and its anti-bot protections.</p>
+        </div>
+      {/if}
+      <p class="privacy-note">Lookup requests are sent to the tracking provider. Do not enter passwords or other sensitive information.</p>
     </section>
 
     <section class="guest-strip" id="guest">
