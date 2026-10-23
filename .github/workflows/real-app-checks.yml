@@ -39,6 +39,8 @@ jobs:
           node-version: 22
       - name: Install dependencies
         run: npm install
+      - name: Generate SvelteKit types
+        run: npx svelte-kit sync
       - name: Type and Svelte checks
         run: npm run check
       - name: Production build
