@@ -15,6 +15,9 @@
   let parcelCarrier = '';
   let parcelBusy = false;
   let parcelError = '';
+  let parcelSaveBusy = false;
+  let parcelSaveMessage = '';
+  let parcelSaveError = '';
   let parcelResult: {
     carrier: string;
     source: string;
@@ -45,6 +48,34 @@
       parcelError = e instanceof Error ? e.message : 'Tracking lookup failed. Please try again.';
     } finally {
       parcelBusy = false;
+    }
+  }
+
+  async function saveParcel() {
+    parcelSaveMessage = '';
+    parcelSaveError = '';
+    if (!supabase || !user || !parcelResult) {
+      parcelSaveError = 'Sign in to save this parcel.';
+      return;
+    }
+    parcelSaveBusy = true;
+    try {
+      const { error: saveError } = await supabase.from('tracked_parcels').upsert({
+        user_id: user.id,
+        tracking_number: parcelNumber.trim(),
+        carrier: parcelResult.carrier,
+        current_status: parcelResult.status,
+        expected_delivery: parcelResult.expectedDelivery,
+        service_name: parcelResult.serviceName,
+        latest_result: parcelResult,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'user_id,tracking_number,carrier' });
+      if (saveError) throw saveError;
+      parcelSaveMessage = 'Parcel saved to your WebWatch account.';
+    } catch (e) {
+      parcelSaveError = e instanceof Error ? e.message : 'Could not save this parcel.';
+    } finally {
+      parcelSaveBusy = false;
     }
   }
 
@@ -224,6 +255,15 @@
           {:else}
             <p class="no-events">The courier response did not include scan events. This is not a fabricated timeline; try again later or verify the tracking number.</p>
           {/if}
+          <div class="parcel-save-row">
+            {#if user}
+              <button class="primary-button save-parcel-button" type="button" onclick={saveParcel} disabled={parcelSaveBusy}>{parcelSaveBusy ? 'Saving…' : 'Save this parcel'} <span>↗</span></button>
+            {:else}
+              <p class="save-hint">Sign in above to save this parcel to your account.</p>
+            {/if}
+            {#if parcelSaveMessage}<p class="notice success" role="status">{parcelSaveMessage}</p>{/if}
+            {#if parcelSaveError}<p class="notice error" role="alert">{parcelSaveError}</p>{/if}
+          </div>
           <p class="source-note">Source: {parcelResult.source}. Availability depends on the courier's website and its anti-bot protections.</p>
         </div>
       {/if}
