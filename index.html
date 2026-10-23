@@ -274,6 +274,10 @@ body.light .stat-card:hover,body.light .panel:hover,body.light .watch-card:hover
 .home-item-clickable:focus-visible{outline:2px solid #ef5264;outline-offset:2px}
 body.light .home-item-clickable:hover{background-color:rgba(37,99,235,.045);border-color:rgba(37,99,235,.22)}
 
+
+/* The first overview tile's progress bar was still inheriting the animated progress-glint. */
+.stats-grid .stat-card:first-child .stat-line span:after{content:none!important;display:none!important;animation:none!important;transform:none!important;background:none!important}
+
 </style>
 </head>
 <body><div class="shell">
