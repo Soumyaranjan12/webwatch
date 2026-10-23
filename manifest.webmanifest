@@ -1,0 +1,23 @@
+{
+  "name": "WebWatch — Price & Parcel Tracker",
+  "short_name": "WebWatch",
+  "description": "Keep an eye on product prices and deliveries.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#09090b",
+  "theme_color": "#09090b",
+  "categories": [
+    "shopping",
+    "utilities"
+  ],
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
