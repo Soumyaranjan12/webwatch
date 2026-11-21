@@ -4,6 +4,7 @@
   const session = authClient.useSession();
 
   let mode: 'signin' | 'signup' = 'signin';
+  let activeSection: 'overview' | 'prices' | 'parcels' | 'settings' = 'overview';
   let displayName = '';
   let email = '';
   let password = '';
@@ -155,6 +156,22 @@
         <p>Connecting your WebWatch session…</p>
       </section>
     {:else if $session.data}
+      <div class="workspace-layout">
+        <aside class="workspace-sidebar" aria-label="Main navigation">
+          <p class="sidebar-label">WORKSPACE</p>
+          <button class:active={activeSection === 'overview'} type="button" onclick={() => activeSection = 'overview'}><span>⌂</span> Overview</button>
+          <button class:active={activeSection === 'prices'} type="button" onclick={() => activeSection = 'prices'}><span>↘</span> Price tracking <small>SOON</small></button>
+          <button class:active={activeSection === 'parcels'} type="button" onclick={() => activeSection = 'parcels'}><span>↗</span> Parcel tracking</button>
+          <div class="sidebar-divider"></div>
+          <p class="sidebar-label">PREFERENCES</p>
+          <button class:active={activeSection === 'settings'} type="button" onclick={() => activeSection = 'settings'}><span>⚙</span> Settings</button>
+          <div class="sidebar-account">
+            <span class="sidebar-avatar">{($session.data.user.name || $session.data.user.email).slice(0, 1).toUpperCase()}</span>
+            <span><strong>{$session.data.user.name || 'Your account'}</strong><small>Signed in</small></span>
+          </div>
+        </aside>
+        <div class="workspace-content">
+        {#if activeSection === 'overview'}
       <section class="dashboard-hero">
         <div class="eyebrow"><span class="eyebrow-line"></span> YOUR PERSONAL TRACKING RADAR</div>
         <div class="dashboard-heading-row">
@@ -176,13 +193,13 @@
             <span class="tile-icon">↗</span>
             <p>PARCEL RADAR</p>
             <strong>Ready to use</strong>
-            <a href="#parcel-tracking">Track a shipment <span>→</span></a>
+            <button class="tile-action" type="button" onclick={() => activeSection = 'parcels'}>Track a shipment <span>→</span></button>
           </article>
           <article class="dashboard-tile">
             <span class="tile-icon">↘</span>
             <p>PRICE WATCH</p>
             <strong>Coming next</strong>
-            <small>Product tracking is on the roadmap.</small>
+            <button class="tile-action muted-action" type="button" onclick={() => activeSection = 'prices'}>Explore price watch <span>→</span></button>
           </article>
           <article class="dashboard-tile">
             <span class="tile-icon">◈</span>
@@ -192,6 +209,38 @@
           </article>
         </div>
       </section>
+      {:else if activeSection === 'prices'}
+        <section class="workspace-panel">
+          <div class="section-eyebrow"><span class="eyebrow-line"></span> PRICE INTELLIGENCE</div>
+          <p class="kicker">COMING NEXT</p>
+          <h1 class="panel-title">Know when the price<br /><span>moves.</span></h1>
+          <p class="panel-description">Price tracking is the next WebWatch module. The interface and account navigation are in place, but product monitoring, price history, and alert delivery are not connected yet.</p>
+          <div class="roadmap-grid">
+            <article><span>01</span><strong>Product watchlists</strong><p>Save product URLs and organize the items you care about.</p></article>
+            <article><span>02</span><strong>Price history</strong><p>See verified price changes over time, not estimates.</p></article>
+            <article><span>03</span><strong>Target alerts</strong><p>Get notified when a product reaches your target price.</p></article>
+          </div>
+          <p class="panel-footnote">No products are being monitored yet. We will enable this area when the tracking backend is ready.</p>
+        </section>
+      {:else if activeSection === 'settings'}
+        <section class="workspace-panel settings-panel">
+          <div class="section-eyebrow"><span class="eyebrow-line"></span> ACCOUNT PREFERENCES</div>
+          <p class="kicker">YOUR ACCOUNT</p>
+          <h1 class="panel-title">Account<br /><span>settings.</span></h1>
+          <div class="settings-list">
+            <div><span>DISPLAY NAME</span><strong>{$session.data.user.name || 'Not set'}</strong></div>
+            <div><span>EMAIL ADDRESS</span><strong>{$session.data.user.email}</strong></div>
+            <div><span>ACCOUNT ID</span><strong class="account-id">{$session.data.user.id}</strong></div>
+            <div><span>AUTHENTICATION</span><strong>Better Auth · Active session</strong></div>
+          </div>
+          <div class="settings-actions">
+            <p>Need to end this session on the current device?</p>
+            <button class="danger-button" type="button" onclick={signOut} disabled={authBusy}>{authBusy ? 'Signing out…' : 'Sign out'}</button>
+          </div>
+        </section>
+      {/if}
+      </div>
+      </div>
     {:else}
       <section class="hero">
         <div class="hero-copy">
@@ -238,6 +287,7 @@
       </section>
     {/if}
 
+    {#if !$session.data || activeSection === 'parcels'}
     <section class="parcel-section" id="parcel-tracking" aria-labelledby="parcel-heading">
       <div class="section-eyebrow"><span class="eyebrow-line"></span> LIVE LOOKUP · PARCEL RADAR</div>
       <div class="parcel-heading-row">
@@ -300,7 +350,9 @@
       <p class="privacy-note">Lookup requests are sent to the tracking provider. Do not enter passwords or other sensitive information.</p>
     </section>
 
-    {#if $session.data}
+    {/if}
+
+    {#if $session.data && activeSection === 'parcels'}
       <section class="saved-parcels">
         <div class="section-eyebrow"><span class="eyebrow-line"></span> YOUR PRIVATE SPACE</div>
         <h2>Your watchlist is next.</h2>
