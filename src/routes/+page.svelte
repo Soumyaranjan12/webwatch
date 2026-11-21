@@ -358,7 +358,7 @@
         <h2>Your watchlist is next.</h2>
         <p class="watchlist-note">Your Better Auth account is active. We are connecting the existing parcel storage to the new account identity before enabling saved trackers here, so your data stays correctly scoped to your account.</p>
       </section>
-    {:else if !$session.isPending}
+    {:else if !$session.data && !$session.isPending}
       <section class="guest-strip" id="guest">
         <div class="guest-symbol">↗</div>
         <div><strong>Just checking something?</strong><p>Guest parcel lookups stay available. Sign in when you want your own WebWatch space.</p></div>
