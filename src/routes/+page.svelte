@@ -171,45 +171,75 @@
           </div>
         </aside>
         <div class="workspace-content">
+          <div class="workspace-toolbar">
+            <div>
+              <span class="toolbar-kicker">WEBWATCH / WORKSPACE</span>
+              <strong>{activeSection === 'overview' ? 'Overview' : activeSection === 'prices' ? 'Price intelligence' : activeSection === 'parcels' ? 'Parcel radar' : 'Account settings'}</strong>
+            </div>
+            <div class="toolbar-meta"><span class="toolbar-live"><i></i> ALL SYSTEMS OPERATIONAL</span><span class="toolbar-avatar">{($session.data.user.name || $session.data.user.email).slice(0, 1).toUpperCase()}</span></div>
+          </div>
         {#if activeSection === 'overview'}
       <section class="dashboard-hero">
-        <div class="eyebrow"><span class="eyebrow-line"></span> YOUR PERSONAL TRACKING RADAR</div>
-        <div class="dashboard-heading-row">
-          <div class="dashboard-copy">
-            <p class="kicker">ACCOUNT OVERVIEW</p>
+        <div class="dashboard-welcome">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-line"></span> YOUR TRACKING COMMAND CENTRE</div>
+            <p class="kicker">MONDAY BRIEFING · YOUR WORKSPACE</p>
             <h1>Good to have you<br /><span>back.</span></h1>
-            <p class="intro">Your WebWatch account is active. Start with a parcel lookup and keep your tracking workflow in one place.</p>
+            <p class="intro">One place to keep tabs on the things that matter. Your workspace is ready when you are.</p>
           </div>
-          <aside class="account-card">
-            <div class="account-avatar">{($session.data.user.name || $session.data.user.email).slice(0, 1).toUpperCase()}</div>
-            <p class="account-card-label">ACCOUNT CONNECTED</p>
-            <h2>{ $session.data.user.name || 'Welcome back' }</h2>
-            <p class="account-email">{$session.data.user.email}</p>
-            <span class="account-status"><span></span> Session active</span>
+          <aside class="welcome-panel">
+            <div class="welcome-panel-top"><span>WORKSPACE STATUS</span><span class="status-pill"><i></i> ACTIVE</span></div>
+            <div class="welcome-user">
+              <span class="welcome-avatar">{($session.data.user.name || $session.data.user.email).slice(0, 1).toUpperCase()}</span>
+              <div><strong>{$session.data.user.name || 'Your account'}</strong><small>{$session.data.user.email}</small></div>
+            </div>
+            <div class="welcome-divider"></div>
+            <div class="welcome-panel-foot"><span>Authentication</span><strong>Protected by Better Auth</strong></div>
           </aside>
         </div>
-        <div class="dashboard-grid">
-          <article class="dashboard-tile">
-            <span class="tile-icon">↗</span>
-            <p>PARCEL RADAR</p>
-            <strong>Ready to use</strong>
-            <button class="tile-action" type="button" onclick={() => activeSection = 'parcels'}>Track a shipment <span>→</span></button>
+
+        <div class="metric-grid">
+          <article class="metric-card metric-primary">
+            <div class="metric-top"><span>AVAILABLE MODULES</span><span class="metric-symbol">◈</span></div>
+            <div class="metric-value">01<span> / 02</span></div>
+            <p>Tracking module ready to use</p>
+            <div class="metric-track"><span></span></div>
+            <small>Parcel radar is live · Price watch is in development</small>
           </article>
-          <article class="dashboard-tile">
-            <span class="tile-icon">↘</span>
-            <p>PRICE WATCH</p>
-            <strong>Coming next</strong>
-            <button class="tile-action muted-action" type="button" onclick={() => activeSection = 'prices'}>Explore price watch <span>→</span></button>
+          <article class="metric-card">
+            <div class="metric-top"><span>PARCEL RADAR</span><span class="metric-symbol">↗</span></div>
+            <div class="metric-state"><i></i> READY FOR LOOKUP</div>
+            <p>Check shipment progress with a tracking number.</p>
+            <button class="metric-action" type="button" onclick={() => activeSection = 'parcels'}>Open parcel radar <span>↗</span></button>
           </article>
-          <article class="dashboard-tile">
-            <span class="tile-icon">◈</span>
-            <p>YOUR ACCOUNT</p>
-            <strong>Protected session</strong>
-            <small>Your sign-in is managed by Better Auth.</small>
+          <article class="metric-card">
+            <div class="metric-top"><span>PRICE INTELLIGENCE</span><span class="metric-symbol">⌁</span></div>
+            <div class="metric-state metric-muted">COMING NEXT</div>
+            <p>Product monitoring and price history are on the roadmap.</p>
+            <button class="metric-action muted-action" type="button" onclick={() => activeSection = 'prices'}>View roadmap <span>→</span></button>
           </article>
+        </div>
+
+        <div class="overview-lower">
+          <section class="overview-card activity-card">
+            <div class="overview-card-heading"><div><span class="card-overline">WORKSPACE ACTIVITY</span><h2>Pick up where you left off.</h2></div><span class="subtle-chip">YOUR SPACE</span></div>
+            <div class="activity-empty">
+              <span class="activity-icon">⌁</span>
+              <div><strong>Your activity will appear here.</strong><p>Run a parcel lookup to get started. Saved tracking history will appear here once account-linked storage is enabled.</p></div>
+            </div>
+            <button class="inline-action" type="button" onclick={() => activeSection = 'parcels'}>Start a parcel lookup <span>→</span></button>
+          </section>
+          <section class="overview-card quick-actions-card">
+            <span class="card-overline">QUICK ACCESS</span>
+            <h2>Move faster.</h2>
+            <button class="quick-action" type="button" onclick={() => activeSection = 'parcels'}><span class="quick-action-icon">↗</span><span><strong>Track a parcel</strong><small>Get the latest courier status</small></span><b>→</b></button>
+            <button class="quick-action" type="button" onclick={() => activeSection = 'prices'}><span class="quick-action-icon">↘</span><span><strong>Explore price watch</strong><small>See what is coming next</small></span><b>→</b></button>
+            <button class="quick-action" type="button" onclick={() => activeSection = 'settings'}><span class="quick-action-icon">⚙</span><span><strong>Account settings</strong><small>Review your account details</small></span><b>→</b></button>
+          </section>
         </div>
       </section>
       {:else if activeSection === 'prices'}
+
         <section class="workspace-panel">
           <div class="section-eyebrow"><span class="eyebrow-line"></span> PRICE INTELLIGENCE</div>
           <p class="kicker">COMING NEXT</p>
