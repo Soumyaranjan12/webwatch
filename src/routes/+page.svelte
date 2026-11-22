@@ -179,78 +179,83 @@
             <div class="toolbar-meta"><span class="toolbar-live"><i></i> WORKSPACE CONNECTED</span><span class="toolbar-avatar">{($session.data.user.name || $session.data.user.email).slice(0, 1).toUpperCase()}</span></div>
           </div>
         {#if activeSection === 'overview'}
-      <section class="dashboard-hero">
-        <div class="dashboard-welcome">
+      <section class="legacy-dashboard">
+        <div class="legacy-page-heading">
           <div>
-            <div class="eyebrow"><span class="eyebrow-line"></span> YOUR TRACKING COMMAND CENTRE</div>
-            <p class="kicker">WORKSPACE SNAPSHOT</p>
-            <h1>Good to have you<br /><span>back.</span></h1>
-            <p class="intro">One place to keep tabs on the things that matter. Your workspace is ready when you are.</p>
+            <div class="section-eyebrow"><span class="eyebrow-line"></span> YOUR TRACKING COMMAND CENTRE</div>
+            <p class="kicker">WORKSPACE OVERVIEW</p>
+            <h1>Keep everything<br /><span>in view.</span></h1>
+            <p class="panel-description">Your deliveries, price watches and recent activity — brought together in one place.</p>
           </div>
-          <aside class="welcome-panel">
-            <div class="welcome-panel-top"><span>WORKSPACE STATUS</span><span class="status-pill"><i></i> ACTIVE</span></div>
-            <div class="welcome-user">
-              <span class="welcome-avatar">{($session.data.user.name || $session.data.user.email).slice(0, 1).toUpperCase()}</span>
-              <div><strong>{$session.data.user.name || 'Your account'}</strong><small>{$session.data.user.email}</small></div>
-            </div>
-            <div class="welcome-divider"></div>
-            <div class="welcome-panel-foot"><span>Authentication</span><strong>Protected by Better Auth</strong></div>
+          <aside class="legacy-date-card">
+            <span class="date-icon">◷</span>
+            <div><strong>YOUR WORKSPACE</strong><small>Private · Better Auth protected</small></div>
           </aside>
         </div>
 
-        <div class="metric-grid">
-          <article class="metric-card metric-primary">
-            <div class="metric-top"><span>AVAILABLE MODULES</span><span class="metric-symbol">◈</span></div>
-            <div class="metric-value">01<span> / 02</span></div>
-            <p>Tracking module ready to use</p>
-            <div class="metric-track"><span></span></div>
-            <small>Parcel radar is live · Price watch is in development</small>
+        <div class="legacy-stat-grid">
+          <article class="legacy-stat-card">
+            <div class="legacy-stat-top"><span>ACTIVE DELIVERIES</span><span class="legacy-stat-icon">↗</span></div>
+            <strong>—</strong><p>Saved parcel tracking is being connected</p>
+            <button type="button" onclick={() => activeSection = 'parcels'}>Open deliveries <span>↗</span></button>
           </article>
-          <article class="metric-card">
-            <div class="metric-top"><span>PARCEL RADAR</span><span class="metric-symbol">↗</span></div>
-            <div class="metric-state"><i></i> READY FOR LOOKUP</div>
-            <p>Check shipment progress with a tracking number.</p>
-            <button class="metric-action" type="button" onclick={() => activeSection = 'parcels'}>Open parcel radar <span>↗</span></button>
+          <article class="legacy-stat-card">
+            <div class="legacy-stat-top"><span>PRICE WATCHES</span><span class="legacy-stat-icon">↘</span></div>
+            <strong>—</strong><p>Product monitoring is not enabled yet</p>
+            <button type="button" onclick={() => activeSection = 'prices'}>Open price watch <span>↗</span></button>
           </article>
-          <article class="metric-card">
-            <div class="metric-top"><span>PRICE INTELLIGENCE</span><span class="metric-symbol">⌁</span></div>
-            <div class="metric-state metric-muted">COMING NEXT</div>
-            <p>Product monitoring and price history are on the roadmap.</p>
-            <button class="metric-action muted-action" type="button" onclick={() => activeSection = 'prices'}>View roadmap <span>→</span></button>
+          <article class="legacy-stat-card">
+            <div class="legacy-stat-top"><span>TRACKING LOOKUPS</span><span class="legacy-stat-icon">⌁</span></div>
+            <strong>{parcelResult ? '1' : '0'}</strong><p>Lookups in this current session</p>
+            <button type="button" onclick={() => activeSection = 'parcels'}>Track a parcel <span>↗</span></button>
+          </article>
+          <article class="legacy-stat-card legacy-account-stat">
+            <div class="legacy-stat-top"><span>ACCOUNT STATUS</span><span class="legacy-stat-icon">◈</span></div>
+            <strong class="legacy-ready">ACTIVE</strong><p>Signed in as { $session.data.user.name || $session.data.user.email }</p>
+            <span class="legacy-stat-foot">Protected by Better Auth</span>
           </article>
         </div>
 
-        <div class="overview-lower">
-          <section class="overview-card activity-card">
-            <div class="overview-card-heading"><div><span class="card-overline">WORKSPACE ACTIVITY</span><h2>Pick up where you left off.</h2></div><span class="subtle-chip">YOUR SPACE</span></div>
-            <div class="activity-empty">
-              <span class="activity-icon">⌁</span>
-              <div><strong>Your activity will appear here.</strong><p>Run a parcel lookup to get started. Saved tracking history will appear here once account-linked storage is enabled.</p></div>
+        <div class="legacy-overview-grid">
+          <section class="legacy-panel">
+            <div class="legacy-panel-heading">
+              <div><span class="card-overline">DELIVERIES</span><h2>Recent shipments</h2><p>Your saved parcel activity will appear here.</p></div>
+              <button class="legacy-text-link" type="button" onclick={() => activeSection = 'parcels'}>View deliveries ↗</button>
             </div>
-            <button class="inline-action" type="button" onclick={() => activeSection = 'parcels'}>Start a parcel lookup <span>→</span></button>
+            <div class="legacy-empty-state">
+              <span class="legacy-empty-icon">↗</span>
+              <div><strong>No saved deliveries yet</strong><p>Run a parcel lookup to check a shipment. Account-linked delivery history will appear here once persistence is connected.</p></div>
+            </div>
+            <button class="legacy-panel-action" type="button" onclick={() => activeSection = 'parcels'}>Track a new parcel <span>→</span></button>
           </section>
-          <section class="overview-card quick-actions-card">
-            <span class="card-overline">QUICK ACCESS</span>
-            <h2>Move faster.</h2>
-            <button class="quick-action" type="button" onclick={() => activeSection = 'parcels'}><span class="quick-action-icon">↗</span><span><strong>Track a parcel</strong><small>Get the latest courier status</small></span><b>→</b></button>
-            <button class="quick-action" type="button" onclick={() => activeSection = 'prices'}><span class="quick-action-icon">↘</span><span><strong>Explore price watch</strong><small>See what is coming next</small></span><b>→</b></button>
-            <button class="quick-action" type="button" onclick={() => activeSection = 'settings'}><span class="quick-action-icon">⚙</span><span><strong>Account settings</strong><small>Review your account details</small></span><b>→</b></button>
+          <section class="legacy-panel">
+            <div class="legacy-panel-heading">
+              <div><span class="card-overline">PRICE INTELLIGENCE</span><h2>Your watchlist</h2><p>Keep an eye on products that matter.</p></div>
+              <span class="legacy-coming-pill">NEXT MODULE</span>
+            </div>
+            <div class="legacy-empty-state">
+              <span class="legacy-empty-icon">↘</span>
+              <div><strong>Price watch is not connected</strong><p>Product URLs, price history and target alerts will be enabled in the next implementation phase.</p></div>
+            </div>
+            <button class="legacy-panel-action" type="button" onclick={() => activeSection = 'prices'}>Explore price watch <span>→</span></button>
           </section>
         </div>
+
+        <section class="legacy-panel legacy-activity-panel">
+          <div class="legacy-panel-heading">
+            <div><span class="card-overline">WORKSPACE ACTIVITY</span><h2>Recent activity</h2><p>Events from your account will be listed here.</p></div>
+            <span class="legacy-coming-pill">ACCOUNT HISTORY PENDING</span>
+          </div>
+          <div class="legacy-activity-empty"><span>⌁</span><div><strong>Your activity feed is ready for data</strong><p>We are keeping the interface honest: no sample shipments, invented prices or fake activity.</p></div></div>
+        </section>
       </section>
       {:else if activeSection === 'prices'}
-
-        <section class="workspace-panel">
+        <section class="workspace-panel legacy-module-panel">
           <div class="section-eyebrow"><span class="eyebrow-line"></span> PRICE INTELLIGENCE</div>
-          <p class="kicker">COMING NEXT</p>
-          <h1 class="panel-title">Know when the price<br /><span>moves.</span></h1>
-          <p class="panel-description">Price tracking is the next WebWatch module. The interface and account navigation are in place, but product monitoring, price history, and alert delivery are not connected yet.</p>
-          <div class="roadmap-grid">
-            <article><span>01</span><strong>Product watchlists</strong><p>Save product URLs and organize the items you care about.</p></article>
-            <article><span>02</span><strong>Price history</strong><p>See verified price changes over time, not estimates.</p></article>
-            <article><span>03</span><strong>Target alerts</strong><p>Get notified when a product reaches your target price.</p></article>
-          </div>
-          <p class="panel-footnote">No products are being monitored yet. We will enable this area when the tracking backend is ready.</p>
+          <div class="legacy-module-heading"><div><p class="kicker">PRODUCT MONITORING</p><h1 class="panel-title">Watch the price.<br /><span>Not the page.</span></h1><p class="panel-description">A dedicated space for products, price movement and target alerts. The interface is being brought across from the original WebWatch portal; live monitoring will be connected in the next phase.</p></div><span class="legacy-coming-pill">IN DEVELOPMENT</span></div>
+          <div class="legacy-price-toolbar"><div><strong>Your watchlist</strong><small>Products you choose to monitor</small></div><span class="legacy-coming-pill">NOT CONNECTED</span></div>
+          <div class="legacy-price-empty"><span class="legacy-price-empty-icon">↘</span><h2>No products to show</h2><p>Product URL validation, price snapshots, historical charts and alerts are not connected yet. Nothing is being monitored in the background.</p></div>
+          <div class="legacy-roadmap-row"><article><span>01</span><strong>Add products</strong><p>Save product links from supported stores.</p></article><article><span>02</span><strong>Track price history</strong><p>Compare verified price snapshots over time.</p></article><article><span>03</span><strong>Set target alerts</strong><p>Get notified when a product reaches your target.</p></article></div>
         </section>
       {:else if activeSection === 'settings'}
         <section class="workspace-panel settings-panel">
