@@ -176,14 +176,14 @@
               <span class="toolbar-kicker">WEBWATCH / WORKSPACE</span>
               <strong>{activeSection === 'overview' ? 'Overview' : activeSection === 'prices' ? 'Price intelligence' : activeSection === 'parcels' ? 'Parcel radar' : 'Account settings'}</strong>
             </div>
-            <div class="toolbar-meta"><span class="toolbar-live"><i></i> ALL SYSTEMS OPERATIONAL</span><span class="toolbar-avatar">{($session.data.user.name || $session.data.user.email).slice(0, 1).toUpperCase()}</span></div>
+            <div class="toolbar-meta"><span class="toolbar-live"><i></i> WORKSPACE CONNECTED</span><span class="toolbar-avatar">{($session.data.user.name || $session.data.user.email).slice(0, 1).toUpperCase()}</span></div>
           </div>
         {#if activeSection === 'overview'}
       <section class="dashboard-hero">
         <div class="dashboard-welcome">
           <div>
             <div class="eyebrow"><span class="eyebrow-line"></span> YOUR TRACKING COMMAND CENTRE</div>
-            <p class="kicker">MONDAY BRIEFING · YOUR WORKSPACE</p>
+            <p class="kicker">WORKSPACE SNAPSHOT</p>
             <h1>Good to have you<br /><span>back.</span></h1>
             <p class="intro">One place to keep tabs on the things that matter. Your workspace is ready when you are.</p>
           </div>
