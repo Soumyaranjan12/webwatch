@@ -205,8 +205,8 @@
             <button type="button" onclick={() => activeSection = 'prices'}>Open price watch <span>↗</span></button>
           </article>
           <article class="legacy-stat-card">
-            <div class="legacy-stat-top"><span>TRACKING LOOKUPS</span><span class="legacy-stat-icon">⌁</span></div>
-            <strong>{parcelResult ? '1' : '0'}</strong><p>Lookups in this current session</p>
+            <div class="legacy-stat-top"><span>LAST LOOKUP</span><span class="legacy-stat-icon">⌁</span></div>
+            <strong>{#if parcelResult}DONE{:else}—{/if}</strong><p>{parcelResult ? 'Latest lookup returned a courier response' : 'No lookup in this session yet'}</p>
             <button type="button" onclick={() => activeSection = 'parcels'}>Track a parcel <span>↗</span></button>
           </article>
           <article class="legacy-stat-card legacy-account-stat">
